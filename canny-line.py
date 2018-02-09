@@ -24,11 +24,14 @@ def getCentre(crop_img):
     return cx,cy
 
 
-def getDecision(cx1,cx2,cx3,cx4,cx5):
+def getDecision(cx1,cx2,cx3,cx4,cx5,prev1,prev2):
     diff1 = centre
     diff2 = centre
     diff3 = centre
     diff4 = centre
+    centreCount = 0
+    leftCount = 0
+    rightCount = 0
     if(abs(cx1-cx2) > 15 & cx1 > cx2):
         diff1 = right
     elif(abs(cx1-cx2) > 15 & cx1 < cx2):
@@ -48,7 +51,26 @@ def getDecision(cx1,cx2,cx3,cx4,cx5):
         diff4 = right
     elif(abs(cx4-cx5) > 15 & cx4 < cx5):
         diff4 = left
-
+    arr = []
+    arr.append(diff1)
+    arr.append(diff2)
+    arr.append(diff3)
+    arr.append(diff4)
+    arr.append(prev1)
+    arr.append(prev2)
+    for diff in arr:
+        if(diff == centre):
+            centreCount = centreCount + 1
+        if(diff == left):
+            leftCount = leftCount + 1
+        if(diff == right):
+            rightCount = rightCount + 1
+    if centreCount > leftCount & centreCount > rightCount:
+        return centre,diff1,diff2
+    elif leftCount > rightCount & leftCount > centreCount:
+        return left,diff1,diff2
+    else:
+        return right,diff1,diff2
 image = cv2.imread("right.jpeg", -1)
 # print image.length
 crop_img1 = image[0:128,0:640]
@@ -63,7 +85,10 @@ cx3,cy3 = getCentre(crop_img3)
 cx4,cy4 = getCentre(crop_img4)
 cx5,cy5 = getCentre(crop_img5)
 # edges = cv2.Canny(img,10,150,apertureSize = 3)
- 
+
+decision , previousDecision1 , previousDecision2 =  getDecision(cx1,cx2,cx3,cx4,cx5,-2,-2)  
+
+print decision
 # # This returns an array of r and theta values
 # lines = cv2.HoughLines(edges,1,np.pi/180, 110)
  
