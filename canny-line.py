@@ -2,6 +2,9 @@ import cv2
 import numpy as np
 import os
 
+left = -1
+centre = 0
+right = 1
 
 def getCentre(crop_img):
     gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
@@ -21,7 +24,7 @@ def getCentre(crop_img):
     return cx,cy
 
 
-image = cv2.imread("ninty.jpeg", -1)
+image = cv2.imread("extreme-right.jpeg", -1)
 # print image.length
 crop_img1 = image[0:128,0:640]
 crop_img2 = image[128:256,0:640]
@@ -86,10 +89,10 @@ while True:
     cv2.putText(crop_img5,'CX:'+str(cx5), (15,30),font,1,(0,0,255),2)
     cv2.putText(crop_img5,'CY: '+str(cy5),(15,70),font,1,(0,0,255),2)
     cv2.imshow('Frame',image)
-    cv2.imshow('Frame 1',crop_img1)
-    cv2.imshow('Frame 2',crop_img2)
-    cv2.imshow('Frame 3',crop_img3)
-    cv2.imshow('Frame 4',crop_img4)
-    cv2.imshow('Frame 5',crop_img5)
+    # cv2.imshow('Frame 1',crop_img1)
+    # cv2.imshow('Frame 2',crop_img2)
+    # cv2.imshow('Frame 3',crop_img3)
+    # cv2.imshow('Frame 4',crop_img4)
+    # cv2.imshow('Frame 5',crop_img5)
     if cv2.waitKey(25) & 0xFF == ord('q'):
     	break
