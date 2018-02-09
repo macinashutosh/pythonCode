@@ -86,10 +86,10 @@ while True:
     cv2.putText(crop_img5,'CX:'+str(cx5), (15,30),font,1,(0,0,255),2)
     cv2.putText(crop_img5,'CY: '+str(cy5),(15,70),font,1,(0,0,255),2)
     cv2.imshow('Frame',image)
-    cv2.imshow('Frame 1',crop_img1)
-    cv2.imshow('Frame 2',crop_img2)
-    cv2.imshow('Frame 3',crop_img3)
-    cv2.imshow('Frame 4',crop_img4)
-    cv2.imshow('Frame 5',crop_img5)
+    # cv2.imshow('Frame 1',crop_img1)
+    # cv2.imshow('Frame 2',crop_img2)
+    # cv2.imshow('Frame 3',crop_img3)
+    # cv2.imshow('Frame 4',crop_img4)
+    # cv2.imshow('Frame 5',crop_img5)
     if cv2.waitKey(25) & 0xFF == ord('q'):
     	break
