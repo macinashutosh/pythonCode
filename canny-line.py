@@ -15,21 +15,25 @@ def getCentre(crop_img):
         M1 = cv2.moments(c1)
         cx = int(M1['m10']/M1['m00'])
         cy = int(M1['m01']/M1['m00'])
-        cv2.line(crop_img1,(cx,0),(cx,720),(255,0,0),1)
-        cv2.line(crop_img1,(0,cy),(1280,cy),(255,0,0),1)
+        cv2.line(crop_img,(cx,0),(cx,720),(255,0,0),1)
+        cv2.line(crop_img,(0,cy),(1280,cy),(255,0,0),1)
         cv2.drawContours(crop_img, c1, -1, (0,255,0), 1)
     return cx,cy
 
 
 image = cv2.imread("ninty.jpeg", -1)
 # print image.length
-crop_img1 = image[0:210,0:640]
-crop_img2 = image[210:430,0:640]
-crop_img3 = image[430:640,0:640]
+crop_img1 = image[0:128,0:640]
+crop_img2 = image[128:256,0:640]
+crop_img3 = image[256:384,0:640]
+crop_img4 = image[384:512,0:640]
+crop_img5 = image[512:640,0:640]
 font = cv2.FONT_HERSHEY_SIMPLEX
 cx1,cy1 = getCentre(crop_img1)
 cx2,cy2 = getCentre(crop_img2)
 cx3,cy3 = getCentre(crop_img3)
+cx4,cy4 = getCentre(crop_img4)
+cx5,cx5 = getCentre(crop_img5)
 # edges = cv2.Canny(img,10,150,apertureSize = 3)
  
 # # This returns an array of r and theta values
@@ -81,5 +85,7 @@ while True:
     cv2.imshow('Frame 1',crop_img1)
     cv2.imshow('Frame 2',crop_img2)
     cv2.imshow('Frame 3',crop_img3)
+    cv2.imshow('Frame 4',crop_img4)
+    cv2.imshow('Frame 5',crop_img5)
     if cv2.waitKey(25) & 0xFF == ord('q'):
     	break
