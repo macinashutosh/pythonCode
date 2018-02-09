@@ -2,6 +2,10 @@ import cv2
 import numpy as np
 import os
 
+left = -1
+centre = 0
+right = 1
+
 
 def getCentre(crop_img):
     gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
@@ -21,7 +25,7 @@ def getCentre(crop_img):
     return cx,cy
 
 
-image = cv2.imread("ninty.jpeg", -1)
+image = cv2.imread("right.jpeg", -1)
 # print image.length
 crop_img1 = image[0:128,0:640]
 crop_img2 = image[128:256,0:640]
