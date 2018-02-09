@@ -25,6 +25,33 @@ def getCentre(crop_img):
     return cx,cy
 
 
+
+def getDecision(cx1,cx2,cx3,cx4,cx5):
+    diff1 = centre
+    diff2 = centre
+    diff3 = centre
+    diff4 = centre
+    if(abs(cx1-cx2) > 15 & cx1 > cx2):
+        diff1 = right
+    elif(abs(cx1-cx2) > 15 & cx1 < cx2):
+        diff1 = left
+
+    if(abs(cx2-cx3) > 15 & cx2 > cx3):
+        diff2 = right
+    elif(abs(cx2-cx3) > 15 & cx2 < cx3):
+        diff2 = left
+
+    if(abs(cx3-cx4) > 15 & cx3 > cx4):
+        diff3 = right
+    elif(abs(cx3-cx4) > 15 & cx3 < cx4):
+        diff3 = left
+
+    if(abs(cx4-cx5) > 15 & cx4 > cx5):
+        diff4 = right
+    elif(abs(cx4-cx5) > 15 & cx4 < cx5):
+        diff4 = left
+
+
 image = cv2.imread("right.jpeg", -1)
 # print image.length
 crop_img1 = image[0:128,0:640]
