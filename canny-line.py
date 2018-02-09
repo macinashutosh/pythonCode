@@ -26,33 +26,59 @@ def getCentre(crop_img):
 
 
 
-def getDecision(cx1,cx2,cx3,cx4,cx5):
+def getDecision(cx1,cx2,cx3,cx4,cx5,prev1,prev2):
+
     diff1 = centre
     diff2 = centre
     diff3 = centre
     diff4 = centre
-    if(abs(cx1-cx2) > 15 & cx1 > cx2):
+    centreCount = 0
+    leftCount = 0
+    rightCount = 0
+    if(abs(cx1-cx2) > 15 and cx1 > cx2):
         diff1 = right
-    elif(abs(cx1-cx2) > 15 & cx1 < cx2):
+    elif(abs(cx1-cx2) > 15 and cx1 < cx2):
         diff1 = left
 
-    if(abs(cx2-cx3) > 15 & cx2 > cx3):
+    if(abs(cx2-cx3) > 15 and cx2 > cx3):
         diff2 = right
-    elif(abs(cx2-cx3) > 15 & cx2 < cx3):
+    elif(abs(cx2-cx3) > 15 and cx2 < cx3):
         diff2 = left
 
-    if(abs(cx3-cx4) > 15 & cx3 > cx4):
+    if(abs(cx3-cx4) > 15 and cx3 > cx4):
         diff3 = right
-    elif(abs(cx3-cx4) > 15 & cx3 < cx4):
+    elif(abs(cx3-cx4) > 15 and cx3 < cx4):
         diff3 = left
 
-    if(abs(cx4-cx5) > 15 & cx4 > cx5):
+    if(abs(cx4-cx5) > 15 and cx4 > cx5):
         diff4 = right
-    elif(abs(cx4-cx5) > 15 & cx4 < cx5):
+    elif(abs(cx4-cx5) > 15 and cx4 < cx5):
         diff4 = left
 
-
-image = cv2.imread("right.jpeg", -1)
+    arr = []
+    arr.append(diff1)
+    arr.append(diff2)
+    arr.append(diff3)
+    arr.append(diff4)
+    arr.append(prev1)
+    arr.append(prev2)
+    for diff in arr:
+        if(diff == centre):
+            centreCount = centreCount + 1
+        if(diff == left):
+            leftCount = leftCount + 1
+        if(diff == right):
+            rightCount = rightCount + 1
+    print leftCount
+    print rightCount
+    print centre    
+    if centreCount > leftCount and centreCount > rightCount:
+        return centre,diff1,diff2
+    elif leftCount > rightCount and leftCount > centreCount:
+        return left,diff1,diff2
+    else:
+        return right,diff1,diff2
+image = cv2.imread("left.jpeg", -1)
 # print image.length
 crop_img1 = image[0:128,0:640]
 crop_img2 = image[128:256,0:640]
@@ -66,7 +92,10 @@ cx3,cy3 = getCentre(crop_img3)
 cx4,cy4 = getCentre(crop_img4)
 cx5,cy5 = getCentre(crop_img5)
 # edges = cv2.Canny(img,10,150,apertureSize = 3)
- 
+
+decision , previousDecision1 , previousDecision2 =  getDecision(cx1,cx2,cx3,cx4,cx5,-1,-1)  
+
+print decision
 # # This returns an array of r and theta values
 # lines = cv2.HoughLines(edges,1,np.pi/180, 110)
  
