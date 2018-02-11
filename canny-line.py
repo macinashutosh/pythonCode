@@ -66,7 +66,7 @@ def getDecision(cx1,cx2,cx3,cx4,cx5,prev1,prev2):
 
     arr = []
     arr.append(diff1)
-    arr.append(diff2)
+    #arr.append(diff2)
     arr.append(diff3)
     arr.append(diff4)
     arr.append(prev1)
@@ -90,20 +90,26 @@ def getDecision(cx1,cx2,cx3,cx4,cx5,prev1,prev2):
 def turn_left():
     GPIO.output(Motor1A,1)
     GPIO.output(Motor1B,1)
+    #GPIO.output(Motor1E,1)
     GPIO.output(Motor2A,0)
     GPIO.output(Motor2B,1)
+    #GPIO.output(Motor2E,1)
     print "turn left"
 def turn_right():
     GPIO.output(Motor1A,0)
     GPIO.output(Motor1B,1)
+    #GPIO.output(Motor1E,1)
     GPIO.output(Motor2A,1)
     GPIO.output(Motor2B,1)
+    #GPIO.output(Motor2E,1)
     print "turn right"
 def go_straight():
     GPIO.output(Motor1A,0)
     GPIO.output(Motor1B,1)
+    #GPIO.output(Motor1E,1)
     GPIO.output(Motor2A,0)
     GPIO.output(Motor2B,1)
+    #GPIO.output(Motor2E,1)
     print "go straight"
 def motor_stop():
     GPIO.output(Motor1A,0)
@@ -128,12 +134,11 @@ GPIO.setup(Motor2A,GPIO.OUT)
 GPIO.setup(Motor2B,GPIO.OUT)
 GPIO.setup(Motor2E,GPIO.OUT)
 
+speeda = GPIO.PWM(Motor1E,100)
+speedb = GPIO.PWM(Motor2E,100)
 
-# speeda = GPIO.PWM(Motor1E,100)
-# speedb = GPIO.PWM(Motor2E,100)
-
-# speedb.start(25)#left motor
-# speeda.start(25)#right motor
+speedb.start(25)#left motor
+speeda.start(25)#right motor
 GPIO.output(Motor1A,0)
 GPIO.output(Motor1B,0)
 GPIO.output(Motor2A,0)
@@ -154,15 +159,16 @@ right = 1
 
 previousDecision1 = centre
 previousDecision2 = centre
-
+decisionArr = [centre,centre,centre,centre]
+decisionItr = 0
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     
     image = frame.array
-    crop_img1 = image[0:128,0:640]
-    crop_img2 = image[128:256,0:640]
-    crop_img3 = image[256:384,0:640]
-    crop_img4 = image[384:512,0:640]
-    crop_img5 = image[512:640,0:640]
+    crop_img1 = image[0:128,200:440]
+    crop_img2 = image[128:256,200:440]
+    crop_img3 = image[256:384,200:440]
+    crop_img4 = image[384:512,200:440]
+    crop_img5 = image[512:640,200:440]
     font = cv2.FONT_HERSHEY_SIMPLEX
     cx1,cy1 = getCentre(crop_img1)
     cx2,cy2 = getCentre(crop_img2)
@@ -172,15 +178,24 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # edges = cv2.Canny(img,10,150,apertureSize = 3)
 
     decision , previousDecision1 , previousDecision2 =  getDecision(cx1,cx2,cx3,cx4,cx5,previousDecision1,previousDecision2)  
+    decisionArr.push(decision)
 
-    print decision
-
-    if decision == centre:
+    if decisionArr[decisionItr] == centre:
         go_straight()
-    elif decision == left:
+    elif decisionArr[decisionItr] == left:
         turn_left()
     else:
         turn_right()
+    time.sleep(delay_time)
+    decisionItr = decisionItr + 1;
+    motor_stop()    
+    
+    
+    rawCapture.truncate(0)
+    #cv2.imshow('frame',image)
+    if cv2.waitKey(25) & 0xFF == ord('q'):
+        break
+    
     # while True:
     # #cv2.imshow('frame',image)
     #     cv2.putText(crop_img1,'CX:'+str(cx1), (15,30),font,1,(0,0,255),2)
