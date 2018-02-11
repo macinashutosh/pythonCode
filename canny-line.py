@@ -9,44 +9,12 @@ import RPi.GPIO as GPIO
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
  
-Motor1A = 33
-Motor1B = 35
-Motor1E = 37
-Motor2A = 36
-Motor2B = 38
-Motor2E = 40
-
-GPIO.setup(Motor1A,GPIO.OUT)
-GPIO.setup(Motor1B,GPIO.OUT)
-GPIO.setup(Motor1E,GPIO.OUT)
-GPIO.setup(Motor2A,GPIO.OUT)
-GPIO.setup(Motor2B,GPIO.OUT)
-GPIO.setup(Motor2E,GPIO.OUT)
-
-
-# speeda = GPIO.PWM(Motor1E,100)
-# speedb = GPIO.PWM(Motor2E,100)
-
-# speedb.start(25)#left motor
-# speeda.start(25)#right motor
-GPIO.output(Motor1A,0)
-GPIO.output(Motor1B,0)
-GPIO.output(Motor2A,0)
-GPIO.output(Motor2B,0)
-
-delay_time = 0.3
-thicknessAllowance = 20
-camera = PiCamera()
-camera.resolution = (640,640)
-camera.framerate = 43
-rawCapture = PiRGBArray(camera, size=(640,640))
-
-time.sleep(1)
-font = cv2.FONT_HERSHEY_SIMPLEX
-left = -1
-centre = 0
-right = 1
-
+# Motor1A = 33
+# Motor1B = 35
+# Motor1E = 37
+# Motor2A = 36
+# Motor2B = 38
+# Motor2E = 40
 
 def getCentre(crop_img):
     gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
@@ -142,6 +110,51 @@ def motor_stop():
     GPIO.output(Motor1B,0)
     GPIO.output(Motor2A,0)
     GPIO.output(Motor2B,0)
+
+
+
+
+Motor1A = 29
+Motor1B = 31
+Motor1E = 35
+Motor2A = 38
+Motor2B = 32
+Motor2E = 40
+
+GPIO.setup(Motor1A,GPIO.OUT)
+GPIO.setup(Motor1B,GPIO.OUT)
+GPIO.setup(Motor1E,GPIO.OUT)
+GPIO.setup(Motor2A,GPIO.OUT)
+GPIO.setup(Motor2B,GPIO.OUT)
+GPIO.setup(Motor2E,GPIO.OUT)
+
+
+# speeda = GPIO.PWM(Motor1E,100)
+# speedb = GPIO.PWM(Motor2E,100)
+
+# speedb.start(25)#left motor
+# speeda.start(25)#right motor
+GPIO.output(Motor1A,0)
+GPIO.output(Motor1B,0)
+GPIO.output(Motor2A,0)
+GPIO.output(Motor2B,0)
+
+delay_time = 0.3
+thicknessAllowance = 20
+camera = PiCamera()
+camera.resolution = (640, 640)
+camera.framerate = 32
+rawCapture = PiRGBArray(camera, size=(640, 640))
+
+time.sleep(1)
+font = cv2.FONT_HERSHEY_SIMPLEX
+left = -1
+centre = 0
+right = 1
+
+previousDecision1 = centre
+previousDecision2 = centre
+
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     
     image = frame.array
@@ -158,7 +171,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     cx5,cy5 = getCentre(crop_img5)
     # edges = cv2.Canny(img,10,150,apertureSize = 3)
 
-    decision , previousDecision1 , previousDecision2 =  getDecision(cx1,cx2,cx3,cx4,cx5,-1,-1)  
+    decision , previousDecision1 , previousDecision2 =  getDecision(cx1,cx2,cx3,cx4,cx5,previousDecision1,previousDecision2)  
 
     print decision
 
@@ -168,25 +181,25 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         turn_left()
     else:
         turn_right()
-    while True:
-    #cv2.imshow('frame',image)
-        cv2.putText(crop_img1,'CX:'+str(cx1), (15,30),font,1,(0,0,255),2)
-        cv2.putText(crop_img1,'CY: '+str(cy1),(15,70),font,1,(0,0,255),2)
-        cv2.putText(crop_img2,'CX:'+str(cx2), (15,30),font,1,(0,0,255),2)
-        cv2.putText(crop_img2,'CY: '+str(cy2),(15,70),font,1,(0,0,255),2)
-        cv2.putText(crop_img3,'CX:'+str(cx3), (15,30),font,1,(0,0,255),2)
-        cv2.putText(crop_img3,'CY: '+str(cy3),(15,70),font,1,(0,0,255),2)
-        cv2.putText(crop_img4,'CX:'+str(cx4), (15,30),font,1,(0,0,255),2)
-        cv2.putText(crop_img4,'CY: '+str(cy4),(15,70),font,1,(0,0,255),2)
-        cv2.putText(crop_img5,'CX:'+str(cx5), (15,30),font,1,(0,0,255),2)
-        cv2.putText(crop_img5,'CY: '+str(cy5),(15,70),font,1,(0,0,255),2)
-        cv2.imshow('Frame',image)
-        # cv2.imshow('Frame 1',crop_img1)
-        # cv2.imshow('Frame 2',crop_img2)
-        # cv2.imshow('Frame 3',crop_img3)
-        # cv2.imshow('Frame 4',crop_img4)
-        # cv2.imshow('Frame 5',crop_img5)
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            break                    
+    # while True:
+    # #cv2.imshow('frame',image)
+    #     cv2.putText(crop_img1,'CX:'+str(cx1), (15,30),font,1,(0,0,255),2)
+    #     cv2.putText(crop_img1,'CY: '+str(cy1),(15,70),font,1,(0,0,255),2)
+    #     cv2.putText(crop_img2,'CX:'+str(cx2), (15,30),font,1,(0,0,255),2)
+    #     cv2.putText(crop_img2,'CY: '+str(cy2),(15,70),font,1,(0,0,255),2)
+    #     cv2.putText(crop_img3,'CX:'+str(cx3), (15,30),font,1,(0,0,255),2)
+    #     cv2.putText(crop_img3,'CY: '+str(cy3),(15,70),font,1,(0,0,255),2)
+    #     cv2.putText(crop_img4,'CX:'+str(cx4), (15,30),font,1,(0,0,255),2)
+    #     cv2.putText(crop_img4,'CY: '+str(cy4),(15,70),font,1,(0,0,255),2)
+    #     cv2.putText(crop_img5,'CX:'+str(cx5), (15,30),font,1,(0,0,255),2)
+    #     cv2.putText(crop_img5,'CY: '+str(cy5),(15,70),font,1,(0,0,255),2)
+    #     cv2.imshow('Frame',image)
+    #     # cv2.imshow('Frame 1',crop_img1)
+    #     # cv2.imshow('Frame 2',crop_img2)
+    #     # cv2.imshow('Frame 3',crop_img3)
+    #     # cv2.imshow('Frame 4',crop_img4)
+    #     # cv2.imshow('Frame 5',crop_img5)
+    #     if cv2.waitKey(25) & 0xFF == ord('q'):
+    #         break                    
      
 GPIO.cleanup()
