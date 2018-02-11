@@ -21,9 +21,9 @@ def getCentre(crop_img):
     blur = cv2.GaussianBlur(gray,(15,15),0)
     ret,thresh = cv2.threshold(blur,60,255,cv2.THRESH_BINARY_INV)
     img, contours, hierarchy = cv2.findContours(thresh, 1, cv2.CHAIN_APPROX_SIMPLE)
-    cx = 0
-    cy = 0
-    if (len(contours)):
+    cx = -1
+    cy = -1
+    if (len(contours)>1):
         c1 = max(contours, key=cv2.contourArea)
         M1 = cv2.moments(c1)
         cx = int(M1['m10']/M1['m00'])
@@ -49,12 +49,23 @@ def getDecision(cx1,cx2,cx3,cx4,cx5,prev1,prev2):
         diff1 = right
     elif(abs(cx1-cx2) > sensitivity and cx1 < cx2):
         diff1 = left
+    if(cx1 < 0):
+        if previousDecision1 == left:
+            diff1 = right
+        else:
+            diff1 = left
+    
 
     if(abs(cx2-cx3) > sensitivity and cx2 > cx3):
         diff2 = right
     elif(abs(cx2-cx3) > sensitivity and cx2 < cx3):
         diff2 = left
 
+    if(cx2 < 0):
+        if previousDecision1 == left:
+            diff2 = right
+        else:
+            diff2 = left
     if(abs(cx3-cx4) > sensitivity and cx3 > cx4):
         diff3 = right
     elif(abs(cx3-cx4) > sensitivity and cx3 < cx4):
@@ -67,7 +78,7 @@ def getDecision(cx1,cx2,cx3,cx4,cx5,prev1,prev2):
 
     arr = []
     arr.append(diff1)
-    #arr.append(diff2)
+    arr.append(diff2)
     arr.append(diff3)
     arr.append(diff4)
     arr.append(prev1)
@@ -160,36 +171,40 @@ right = 1
 
 previousDecision1 = centre
 previousDecision2 = centre
-decisionArr = [centre,centre]
+decisionArr = [centre]
 decisionItr = 0
+i = 30
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-    
-    image = frame.array
-    crop_img1 = image[0:128,0:640]
-    crop_img2 = image[128:256,0:640]
-    crop_img3 = image[256:384,0:640]
-    crop_img4 = image[384:512,0:640]
-    crop_img5 = image[512:640,0:640]
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    cx1,cy1 = getCentre(crop_img1)
-    cx2,cy2 = getCentre(crop_img2)
-    cx3,cy3 = getCentre(crop_img3)
-    cx4,cy4 = getCentre(crop_img4)
-    cx5,cy5 = getCentre(crop_img5)
-    # edges = cv2.Canny(img,10,150,apertureSize = 3)
-
-    decision , previousDecision1 , previousDecision2 =  getDecision(cx1,cx2,cx3,cx4,cx5,previousDecision1,previousDecision2)  
-    decisionArr.append(decision)
-
-    if decisionArr[decisionItr] == centre:
-        go_straight()
-    elif decisionArr[decisionItr] == left:
-        turn_left()
+    if i > 0:
+        i= i - 1
+        time.sleep(0.1)
     else:
-        turn_right()
-    time.sleep(delay_time)
-    decisionItr = decisionItr + 1;
-    motor_stop()    
+        image = frame.array
+        crop_img1 = image[0:128,0:640]
+        crop_img2 = image[128:256,0:640]
+        crop_img3 = image[256:384,0:640]
+        crop_img4 = image[384:512,0:640]
+        crop_img5 = image[512:640,0:640]
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cx1,cy1 = getCentre(crop_img1)
+        cx2,cy2 = getCentre(crop_img2)
+        cx3,cy3 = getCentre(crop_img3)
+        cx4,cy4 = getCentre(crop_img4)
+        cx5,cy5 = getCentre(crop_img5)
+        # edges = cv2.Canny(img,10,150,apertureSize = 3)
+
+        decision , previousDecision1 , previousDecision2 =  getDecision(cx1,cx2,cx3,cx4,cx5,previousDecision1,previousDecision2)  
+        decisionArr.append(decision)
+
+        if decisionArr[decisionItr] == centre:
+            go_straight()
+        elif decisionArr[decisionItr] == left:
+            turn_left()
+        elif decisionArr[decisionItr] == right:
+            turn_right()
+        time.sleep(delay_time)
+        decisionItr = decisionItr + 1;
+        motor_stop()    
     
     
     rawCapture.truncate(0)
