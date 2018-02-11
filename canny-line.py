@@ -60,12 +60,7 @@ def getDecision(cx1,cx2,cx3,cx4,cx5,prev1,prev2):
         diff2 = right
     elif(abs(cx2-cx3) > sensitivity and cx2 < cx3):
         diff2 = left
-
-    if(cx2 < 0):
-        if previousDecision1 == left:
-            diff2 = right
-        else:
-            diff2 = left
+        
     if(abs(cx3-cx4) > sensitivity and cx3 > cx4):
         diff3 = right
     elif(abs(cx3-cx4) > sensitivity and cx3 < cx4):
