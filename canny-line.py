@@ -44,24 +44,25 @@ def getDecision(cx1,cx2,cx3,cx4,cx5,prev1,prev2):
     centreCount = 0
     leftCount = 0
     rightCount = 0
-    if(abs(cx1-cx2) > 15 and cx1 > cx2):
+    sensitivity = 13
+    if(abs(cx1-cx2) > sensitivity and cx1 > cx2):
         diff1 = right
-    elif(abs(cx1-cx2) > 15 and cx1 < cx2):
+    elif(abs(cx1-cx2) > sensitivity and cx1 < cx2):
         diff1 = left
 
-    if(abs(cx2-cx3) > 15 and cx2 > cx3):
+    if(abs(cx2-cx3) > sensitivity and cx2 > cx3):
         diff2 = right
-    elif(abs(cx2-cx3) > 15 and cx2 < cx3):
+    elif(abs(cx2-cx3) > sensitivity and cx2 < cx3):
         diff2 = left
 
-    if(abs(cx3-cx4) > 15 and cx3 > cx4):
+    if(abs(cx3-cx4) > sensitivity and cx3 > cx4):
         diff3 = right
-    elif(abs(cx3-cx4) > 15 and cx3 < cx4):
+    elif(abs(cx3-cx4) > sensitivity and cx3 < cx4):
         diff3 = left
 
-    if(abs(cx4-cx5) > 15 and cx4 > cx5):
+    if(abs(cx4-cx5) > sensitivity and cx4 > cx5):
         diff4 = right
-    elif(abs(cx4-cx5) > 15 and cx4 < cx5):
+    elif(abs(cx4-cx5) > sensitivity and cx4 < cx5):
         diff4 = left
 
     arr = []
@@ -159,16 +160,16 @@ right = 1
 
 previousDecision1 = centre
 previousDecision2 = centre
-decisionArr = [centre,centre,centre,centre]
+decisionArr = [centre,centre]
 decisionItr = 0
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     
     image = frame.array
-    crop_img1 = image[0:128,200:440]
-    crop_img2 = image[128:256,200:440]
-    crop_img3 = image[256:384,200:440]
-    crop_img4 = image[384:512,200:440]
-    crop_img5 = image[512:640,200:440]
+    crop_img1 = image[0:128,0:640]
+    crop_img2 = image[128:256,0:640]
+    crop_img3 = image[256:384,0:640]
+    crop_img4 = image[384:512,0:640]
+    crop_img5 = image[512:640,0:640]
     font = cv2.FONT_HERSHEY_SIMPLEX
     cx1,cy1 = getCentre(crop_img1)
     cx2,cy2 = getCentre(crop_img2)
@@ -178,7 +179,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # edges = cv2.Canny(img,10,150,apertureSize = 3)
 
     decision , previousDecision1 , previousDecision2 =  getDecision(cx1,cx2,cx3,cx4,cx5,previousDecision1,previousDecision2)  
-    decisionArr.push(decision)
+    decisionArr.append(decision)
 
     if decisionArr[decisionItr] == centre:
         go_straight()
