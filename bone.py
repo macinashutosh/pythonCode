@@ -35,8 +35,8 @@ GPIO.setup(Motor2E,GPIO.OUT)
 speeda = GPIO.PWM(Motor1E,100)
 speedb = GPIO.PWM(Motor2E,100)
 
-speedb.start(20)#left motor
-speeda.start(20)#right motor
+speedb.start(40)#left motor
+speeda.start(40)#right motor
 GPIO.output(Motor1A,0)
 GPIO.output(Motor1B,0)
 GPIO.output(Motor2A,0)
@@ -165,13 +165,10 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
  final_contours = contours1
  if len(contours2)>0:
   final_contours = contours2
-  delay_time = 0.5
  elif len(contours3)>0:
   final_contours = contours3
-  delay_time = 0.7
  elif len(contours4)>0:
   final_contours = contours4
-  delay_time = 1
   
   
  if len(contours) > 0:
@@ -207,7 +204,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
    current_dec = -1
    #GPIO.output(40, GPIO.LOW) 
    #GPIO.output(35, GPIO.HIGH)
-  time.sleep(0.3)
+  time.sleep(delay_time)
   motor_stop()
  elif len(final_contours) > 0:
   c = max(final_contours, key=cv2.contourArea)
@@ -247,7 +244,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
    turn_left()
   elif current_dec == 1:
    turn_right()
-  time.sleep(0.3)
+  time.sleep(delay_time)
   motor_stop()
   #GPIO.output(40, GPIO.HIGH)
   #GPIO.output(35, GPIO.HIGH)
