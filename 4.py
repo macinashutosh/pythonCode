@@ -91,10 +91,7 @@ def getDecision(cx1,cx2,cx3,cx4,cx5,prev1,prev2):
         if(diff == left):
             leftCount = leftCount + 1
         if(diff == right):
-            rightCount = rightCount + 1
-    print leftCount
-    print rightCount
-    print centre    
+            rightCount = rightCount + 1   
     if centreCount > leftCount and centreCount > rightCount:
         return centre,diff1,diff2
     elif leftCount > rightCount and leftCount > centreCount:
