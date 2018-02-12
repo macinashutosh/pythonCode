@@ -165,13 +165,13 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
  final_contours = contours1
  if len(contours2)>0:
   final_contours = contours2
-  delay_time = 0.4
+  delay_time = 0.5
  elif len(contours3)>0:
   final_contours = contours3
-  delay_time = 0.5
+  delay_time = 0.7
  elif len(contours4)>0:
   final_contours = contours4
-  delay_time = 0.6
+  delay_time = 1
   
   
  if len(contours) > 0:
@@ -243,9 +243,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
   time.sleep(delay_time)
   motor_stop()
  else:
-  if current_dec == 1:
+  if current_dec == -1:
    turn_left()
-  elif current_dec == -1:
+  elif current_dec == 1:
    turn_right()
   time.sleep(0.3)
   motor_stop()
