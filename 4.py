@@ -101,36 +101,36 @@ def getDecision(cx1,cx2,cx3,cx4,cx5,prev1,prev2):
         return left,diff1,diff2
     elif rightCount > leftCount and rightCount > centreCount:
         return right,diff1,diff2
-    elif diff1 == left and previousDecision1 == left:
+    elif diff1 == left:
         return left,diff1,diff2
-    elif diff1 == right and previousDecision1 == right:
+    elif diff1 == right:
         return right,diff1,diff2
-    elif diff1 == centre and previousDecision1 == centre:
+    elif diff1 == centre:
         return centre,diff1,diff2
     else:
         return stop,diff1,diff2
-def turn_left():
-    GPIO.output(Motor1A,1)
-    GPIO.output(Motor1B,1)
-    #GPIO.output(Motor1E,1)
-    GPIO.output(Motor2A,0)
-    GPIO.output(Motor2B,1)
-    #GPIO.output(Motor2E,1)
-    print "turn left"
 def turn_right():
     GPIO.output(Motor1A,0)
-    GPIO.output(Motor1B,1)
+    GPIO.output(Motor1B,0)
     #GPIO.output(Motor1E,1)
     GPIO.output(Motor2A,1)
-    GPIO.output(Motor2B,1)
+    GPIO.output(Motor2B,0)
     #GPIO.output(Motor2E,1)
     print "turn right"
-def go_straight():
-    GPIO.output(Motor1A,0)
-    GPIO.output(Motor1B,1)
+def turn_left():
+    GPIO.output(Motor1A,1)
+    GPIO.output(Motor1B,0)
     #GPIO.output(Motor1E,1)
     GPIO.output(Motor2A,0)
-    GPIO.output(Motor2B,1)
+    GPIO.output(Motor2B,0)
+    #GPIO.output(Motor2E,1)
+    print "turn left"
+def go_straight():
+    GPIO.output(Motor1A,1)
+    GPIO.output(Motor1B,0)
+    #GPIO.output(Motor1E,1)
+    GPIO.output(Motor2A,1)
+    GPIO.output(Motor2B,0)
     #GPIO.output(Motor2E,1)
     print "go straight"
 def motor_stop():
