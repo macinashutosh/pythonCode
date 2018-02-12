@@ -15,7 +15,10 @@ GPIO.setmode(GPIO.BOARD)
 # Motor2A = 36
 # Motor2B = 38
 # Motor2E = 40
-
+left = -1
+centre = 0
+right = 1
+stop = -3
 def getCentre(crop_img):
     gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray,(15,15),0)
@@ -95,12 +98,14 @@ def getDecision(cx1,cx2,cx3,cx4,cx5,prev1,prev2):
         return left,diff1,diff2
     elif rightCount > leftCount and rightCount > centreCount:
         return right,diff1,diff2
-    elif diff1 == left and diff2 == left:
+    elif diff1 == left and previousDecision1 == left:
         return left,diff1,diff2
-    elif diff1 == right and diff2 == right:
+    elif diff1 == right and previousDecision1 == right:
         return right,diff1,diff2
-    else:
+    elif diff1 == centre and previousDecision1 == centre:
         return centre,diff1,diff2
+    else:
+        return stop,diff1,diff2
 def turn_left():
     GPIO.output(Motor1A,1)
     GPIO.output(Motor1B,1)
@@ -167,9 +172,7 @@ rawCapture = PiRGBArray(camera, size=(640, 640))
 
 time.sleep(1)
 font = cv2.FONT_HERSHEY_SIMPLEX
-left = -1
-centre = 0
-right = 1
+
 
 previousDecision1 = centre
 previousDecision2 = centre
@@ -198,6 +201,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         decision , previousDecision1 , previousDecision2 =  getDecision(cx1,cx2,cx3,cx4,cx5,previousDecision1,previousDecision2)  
         decisionArr.append(decision)
 
+        if decision == stop:
+            motor_stop
+            break
         if decisionArr[decisionItr] == centre:
             go_straight()
         elif decisionArr[decisionItr] == left:
