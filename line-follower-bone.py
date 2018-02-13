@@ -32,8 +32,8 @@ GPIO.setup(Motor2A,GPIO.OUT)
 GPIO.setup(Motor2B,GPIO.OUT)
 GPIO.setup(Motor2E,GPIO.OUT)
 
-speeda = GPIO.PWM(Motor1E,100)
-speedb = GPIO.PWM(Motor2E,100)
+speeda = GPIO.PWM(Motor1E,45)
+speedb = GPIO.PWM(Motor2E,45)
 
 speedb.start(100)#left motor
 speeda.start(100)#right motor
