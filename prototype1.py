@@ -4,7 +4,7 @@ import time
 
 img_name = "image6.png"
 img = cv2.imread(img_name,1)
-
+dic={"cr":"assorted.png","tr":"carnation.png","sr":"gerber.png","cg":"hibiscusred.png","tg":"marigold.png","sg":"hydrangeablue.png","cb":"hydrangeayellow.png","tb":"lilac.png","sb":"lily.png"}
 def color_recog(p1,p2,img2,string):
      hsv = cv2.cvtColor(img2,cv2.COLOR_BGR2HSV)
      lower = np.array(p1)
@@ -38,11 +38,9 @@ def detect_markers():
   pblue2=[130,255,255]
   pblue1=[75,50,50]
   tb,cb,sb=color_recog(pblue1,pblue2,img,'string1')
-
   pgreen2=[69,255,110]
   pgreen1=[60,0,50]
   tg,cg,sg=color_recog(pgreen1,pgreen2,img,'thre1')
-  
   pred1 = [0,100,100]
   pred2 = [20,255,255]
   tr,cr,sr=color_recog(pred1,pred2,img,'str2')
@@ -117,13 +115,13 @@ def plane(image,overlay_image,size,kitni_baar,spacing=30):#size of the flower sh
         i = i + 1
         count = count+spacing
         img_x = img_x + 5
-# image = cv2.imread("horizontal.jpg", -1)
-# overlay_image = cv2.imread("carnation.png",-1)
+image = cv2.imread("horizontal.jpg", -1)
+overlay_image = cv2.imread("carnation.png",-1)
 
 # number_of_times = 4
 # size_of_flower = 40
 # flower_spacing = 40
-# hillside(image,overlay_image,size_of_flower,number_of_times,flower_spacing)#for hillside size_of_flower = 40 flower_Spacing = 40
+hillside(image,overlay_image,size_of_flower,number_of_times,flower_spacing)#for hillside size_of_flower = 40 flower_Spacing = 40
 # berns(image,overlay_image,size_of_flower,number_of_times,flower_spacing)#for berns size_of_flower = 40 flower_Spacing = 40
 # size_of_flower = 30
 # flower_spacing = 30
