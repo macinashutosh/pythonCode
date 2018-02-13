@@ -46,15 +46,18 @@ def detect_markers():
   pred2 = [20,255,255]
   tr,cr,sr=color_recog(pred1,pred2,img,'str2')
 
-  print "tr" +str(tr)
-  print "tg" +str(tg)
-  print "tb" +str(tb)
-  print "cr" +str(cr)
-  print "cg" +str(cg)
-  print "cb" +str(cb)
-  print "sr" +str(sr)
-  print "sg" +str(sg)
-  print "sb" +str(sb)
+  # print "tr" +str(tr)
+  # print "tg" +str(tg)
+  # print "tb" +str(tb)
+  # print "cr" +str(cr)
+  # print "cg" +str(cg)
+  # print "cb" +str(cb)
+  # print "sr" +str(sr)
+  # print "sg" +str(sg)
+  # print "sb" +str(sb)
+
+  markers={"tr":tr,"tg":tg,"tb":tb,"sr":sr,"sg":sg,"sb":sb,"tr":cr,"cg":cg,"cb":cb}
+  print markers
 
 
 

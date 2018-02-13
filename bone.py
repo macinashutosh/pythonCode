@@ -18,6 +18,13 @@ GPIO.setmode(GPIO.BOARD)
 
 #GPIO.output(40, GPIO.HIGH)
 #GPIO.output(35, GPIO.HIGH)
+zone_count=0
+hills={}
+berns={}
+cliff={}
+plains={}
+
+
 Motor1A = 29
 Motor1B = 31
 Motor1E = 35
@@ -88,7 +95,58 @@ def turn_extreme_right():
     GPIO.output(Motor2B,0)
     print "extreme_right"
     #GPIO.output(Motor2E,1)
+def shape_recog(p1,p2,img2,string):
+     hsv = cv2.cvtColor(img2,cv2.COLOR_BGR2HSV)
+     lower = np.array(p1)
+     upper = np.array(p2)
+     mask  = cv2.inRange(hsv, lower, upper)
+     ret,thresh = cv2.threshold(mask,125,255,0)
+     imgg, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+     t=0
+     c=0
+     s=0
+     if len(contours) > 0:
+       n1 = len(contours)
+       for i in range(0,n1):
+        if cv2.contourArea(contours[i]) >=1000:
+          cnt1 = contours[i]
+          approx = cv2.approxPolyDP(cnt1,0.03*cv2.arcLength(cnt1,True),True)
+          #print len(approx)
+          if len(approx)==3:
+           t=t+1 
+           #print "TRiangle"
+          elif len(approx)==4:
+           s=s+1
+           #print "square"
+          elif len(approx)>=7:
+           c=c+1 
+           #print "circle"
+     return t,c,s      
+       
+def color_recog(img):
+ pblue2=[100,255,255]
+ pblue1=[75,50,50]
+ tb,cb,sb=shape_recog(pblue1,pblue2,img,'string1')
 
+ pgreen2=[69,255,110]
+ pgreen1=[60,0,50]
+ tg,cg,sg=shape_recog(pgreen1,pgreen2,img,'thre1')
+
+ pred1 = [0,100,100]
+ pred2 = [20,255,255]
+ tr,cr,sr=shape_recog(pred1,pred2,img,'str2')
+ markers={"tr":tr,"tg":tg,"tb":tb,"sr":sr,"sg":sg,"sb":sb,"tr":cr,"cg":cg,"cb":cb}
+ return markers
+def detect_markers(img):
+ zone_count=zone_count+1
+ if zone_count==1:
+  hills=color_recog(img)
+ elif zone_count==2:
+  cliff=color_recog(img)
+ elif zone_count ==3:
+  berns=color_recog(img)
+ else
+  plains=color_recog(img)    
 def get_contours(crop_img):
  gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
 
@@ -109,9 +167,9 @@ def get_contours(crop_img):
  #print cv2.contourArea(c)
  cx = int(M['m10']/M['m00'])
  cy = int(M['m01']/M['m00'])
- cv2.line(crop_img,(cx,0),(cx,720),(255,0,0),1)
- cv2.line(crop_img,(0,cy),(1280,cy),(255,0,0),1)
- cv2.drawContours(crop_img,contours, -1, (0,255,0), 1)
+ #cv2.line(crop_img,(cx,0),(cx,720),(255,0,0),1)
+ #cv2.line(crop_img,(0,cy),(1280,cy),(255,0,0),1)
+ #cv2.drawContours(crop_img,contours, -1, (0,255,0), 1)
  area =  cv2.contourArea(c)
  print area
  return area 
@@ -136,6 +194,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     print "zone_marker_aagya"
     time.sleep(0.8)
     motor_stop()
+    detect_markers(image)    
     break
   count = count - 1
     # Convert to grayscale
@@ -274,10 +333,10 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
   cx = int(M['m10']/M['m00'])
   cy = int(M['m01']/M['m00'])
 
-  cv2.line(img_to_draw,(cx,0),(cx,720),(255,0,0),1)
-  cv2.line(img_to_draw,(0,cy),(1280,cy),(255,0,0),1)
+  #cv2.line(img_to_draw,(cx,0),(cx,720),(255,0,0),1)
+  #cv2.line(img_to_draw,(0,cy),(1280,cy),(255,0,0),1)
 
-  cv2.drawContours(img_to_draw,final_contours, -1, (0,255,0), 1)
+  #cv2.drawContours(img_to_draw,final_contours, -1, (0,255,0), 1)
 
   print cx
   #print cy
