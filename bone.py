@@ -110,7 +110,7 @@ def shape_recog(p1,p2,img2,string):
        for i in range(0,n1):
         if cv2.contourArea(contours[i]) >=1000:
           cnt1 = contours[i]
-          approx = cv2.approxPolyDP(cnt1,0.03*cv2.arcLength(cnt1,True),True)
+          approx = cv2.approxPolyDP(cnt1,0.04*cv2.arcLength(cnt1,True),True)
           #print len(approx)
           if len(approx)==3:
            t=t+1 
@@ -118,7 +118,7 @@ def shape_recog(p1,p2,img2,string):
           elif len(approx)==4:
            s=s+1
            #print "square"
-          elif len(approx)>=7:
+          else:
            c=c+1 
            #print "circle"
      return t,c,s      
