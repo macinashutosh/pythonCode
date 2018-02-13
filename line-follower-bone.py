@@ -123,7 +123,7 @@ rawCapture = PiRGBArray(camera, size=(600, 600))
 time.sleep(1)
 current_dec = 0 #1 for Right -1 for Left 0 for c
 i = 5
-count = 1
+
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
  image = frame.array
  crop_img = image[0:120, 240:400]
@@ -131,13 +131,13 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
  crop_img2 = image[240:360, 240:400]
  crop_img3 = image[360:480, 240:400]
  crop_img4 = image[480:600, 240:400]
- if(get_contours(image)>60000):
-  if count < 0:
-    print "zone_marker_aagya"
-    time.sleep(0.8)
-    motor_stop()
-    break
-  count = count - 1
+ # if(get_contours(image)>60000):
+ #  if count < 0:
+ #    print "zone_marker_aagya"
+ #    time.sleep(0.8)
+ #    motor_stop()
+ #    break
+ #  count = count - 1
     # Convert to grayscale
  gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
 
