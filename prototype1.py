@@ -35,19 +35,19 @@ def color_recog(p1,p2,img2,string):
      return t,c,s      
        
 def detect_markers():
-  pblue2=[100,255,255]
+  pblue2=[130,255,255]
   pblue1=[75,50,50]
   tb,cb,sb=color_recog(pblue1,pblue2,img,'string1')
 
-  # pgreen2=[69,255,110]
-  # pgreen1=[60,0,50]
-  # tg,cg,sg=color_recog(pgreen1,pgreen2,img,'thre1')
+  pgreen2=[69,255,110]
+  pgreen1=[60,0,50]
+  tg,cg,sg=color_recog(pgreen1,pgreen2,img,'thre1')
   
-  # pred1 = [0,100,100]
-  # pred2 = [20,255,255]
-  # tr,cr,sr=color_recog(pred1,pred2,img,'str2')
-  # markers={"tr":tr,"tg":tg,"tb":tb,"sr":sr,"sg":sg,"sb":sb,"cr":cr,"cg":cg,"cb":cb}
-  # print markers
+  pred1 = [0,100,100]
+  pred2 = [20,255,255]
+  tr,cr,sr=color_recog(pred1,pred2,img,'str2')
+  markers={"tr":tr,"tg":tg,"tb":tb,"sr":sr,"sg":sg,"sb":sb,"cr":cr,"cg":cg,"cb":cb}
+  print markers
 
 
 def blend_transparent(face_img, overlay_t_img):
