@@ -107,8 +107,8 @@ def plane(image,overlay_image,size,kitni_baar,spacing=30):#size of the flower sh
 
     #     if cv2.waitKey(25) & 0xFF == ord('q'):
     #         break
-image = cv2.imread("horizontal.jpg", -1)
-overlay_image = cv2.imread("carnation.png",-1)
+image = cv2.imread("Plantation.png", -1)
+overlay_image = cv2.imread("Seedlings/carnation.png",-1)
 
 number_of_times = 4
 size_of_flower = 40

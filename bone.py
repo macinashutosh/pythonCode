@@ -7,6 +7,7 @@ import RPi.GPIO as GPIO
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
+imae = cv2.imread("Plantation.png", -1)
 
 #motor 1 is right
 #motor 2 is left
@@ -24,7 +25,8 @@ berns={}
 cliff={}
 plains={}
 
-
+dic={"cr":"assorted.png","tr":"carnation.png","sr":"gerber.png","cg":"hibiscusred.png","tg":"marigold.png","sg":"hydrangeablue.png","cb":"hydrangeayellow.png","tb":"lilac.png","sb":"lily.png"}
+dic2={"sr":"rosered.png","cr":"gerber.png","tr":"poinsettia.png","sb":"orchid.png","cb":"tulipblue.png","tb":"lilac.png","sg":"hibiscusyellow.png","cg":"lily.png","tg":"marigold.png"}
 Motor1A = 29
 Motor1B = 31
 Motor1E = 35
@@ -48,7 +50,73 @@ GPIO.output(Motor1A,0)
 GPIO.output(Motor1B,0)
 GPIO.output(Motor2A,0)
 GPIO.output(Motor2B,0)
+def blend_transparent(face_img, overlay_t_img):
+    overlay_img = overlay_t_img[:,:,:3] 
+    overlay_mask = overlay_t_img[:,:,3:] 
+    background_mask = 255 - overlay_mask
+    overlay_mask = cv2.cvtColor(overlay_mask, cv2.COLOR_GRAY2BGR)
+    background_mask = cv2.cvtColor(background_mask, cv2.COLOR_GRAY2BGR)
+    face_part = (face_img * (1 / 255.0)) * (background_mask * (1 / 255.0))
+    overlay_part = (overlay_img * (1 / 255.0)) * (overlay_mask * (1 / 255.0)) 
+    return np.uint8(cv2.addWeighted(face_part, 255.0, overlay_part, 255.0, 0.0))
 
+def hillside(image,overlay_image,size,kitni_baar,spacing=30):
+    img_x = 260
+    img_y = 340
+    final_overlay = cv2.resize(overlay_image,(size,size), interpolation = cv2.INTER_CUBIC)
+    count = 0
+    i=0
+    while i<kitni_baar:
+        image[img_x:img_x+size,img_y+count:img_y+count+size] = blend_transparent(image[img_x:img_x+size,img_y+count:img_y+count+size],final_overlay)
+        i = i + 1
+        count = count+spacing
+def berns(image,overlay_image,size,kitni_baar,spacing=30):
+    img_x = 190
+    img_y = 140
+    final_overlay = cv2.resize(overlay_image,(size,size), interpolation = cv2.INTER_CUBIC)
+    count = 0
+    i=0
+    if(kitni_baar <= 2):
+        while i < kitni_baar:
+            image[img_x:img_x+size,img_y+count:img_y+count+size] = blend_transparent(image[img_x:img_x+size,img_y+count:img_y+count+size],final_overlay)
+            i = i + 1
+            count = count+spacing
+    else:
+        while i < 2:
+            image[img_x:img_x+size,img_y+count:img_y+count+size] = blend_transparent(image[img_x:img_x+size,img_y+count:img_y+count+size],final_overlay)
+            i = i + 1
+            count = count+spacing
+            img_x = img_x+10
+        img_x = img_x + 10
+        img_y = img_y - 40
+        count = 0
+        i=0
+        while i < kitni_baar-2:
+            image[img_x:img_x+size,img_y+count:img_y+count+size] = blend_transparent(image[img_x:img_x+size,img_y+count:img_y+count+size],final_overlay)
+            i = i + 1
+            count = count+spacing
+            img_x = img_x+10
+def cliff(image,overlay_image,size,kitni_baar,spacing=30):#size of the flower should be small as it is far
+    img_x = 170
+    img_y = 260
+    final_overlay = cv2.resize(overlay_image,(size,size), interpolation = cv2.INTER_CUBIC)
+    count = 0
+    i=0
+    while i<kitni_baar:
+        image[img_x:img_x+size,img_y+count:img_y+count+size] = blend_transparent(image[img_x:img_x+size,img_y+count:img_y+count+size],final_overlay)
+        i = i + 1
+        count = count+spacing
+def plane(image,overlay_image,size,kitni_baar,spacing=30):#size of the flower should be small as it is far
+    img_x = 170
+    img_y = 520
+    final_overlay = cv2.resize(overlay_image,(size,size), interpolation = cv2.INTER_CUBIC)
+    count = 0
+    i=0
+    while i<kitni_baar:
+        image[img_x:img_x+size,img_y+count:img_y+count+size] = blend_transparent(image[img_x:img_x+size,img_y+count:img_y+count+size],final_overlay)
+        i = i + 1
+        count = count+spacing
+        img_x = img_x + 5
 def turn_right():
     GPIO.output(Motor1A,0)
     GPIO.output(Motor1B,0)
@@ -124,7 +192,7 @@ def shape_recog(p1,p2,img2,string):
      return t,c,s      
        
 def color_recog(img):
- pblue2=[100,255,255]
+ pblue2=[130,255,255]
  pblue1=[75,50,50]
  tb,cb,sb=shape_recog(pblue1,pblue2,img,'string1')
 
@@ -194,6 +262,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     print "zone_marker_aagya"
     time.sleep(0.8)
     motor_stop()
+    time.sleep(1)
     detect_markers(image)    
     break
   count = count - 1
@@ -396,6 +465,15 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
  if cv2.waitKey(1) & 0xFF == ord('q'):
   break
 
-
-        
+for key in berns:
+  overlay_image_path="Seedlings/"+dic2[key]
+  #overlay_image_path = "Seedlings/carnation.png"
+  overlay_image = cv2.imread(overlay_image_path,-1)
+  berns(imae,overlay_image,40,berns[key],40)
+for key in cliff:
+  overlay_image_path="Seedlings/"+dic2[key]
+  #overlay_image_path = "Seedlings/carnation.png"
+  overlay_image = cv2.imread(overlay_image_path,-1)
+  cliff(imae,overlay_image,30,cliff[key],30)
+cv2.imwrite('ans',imae)            
 GPIO.cleanup()

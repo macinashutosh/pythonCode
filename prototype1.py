@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import time
 
-img_name = "image6.png"
+img_name = "image3.png"
 img = cv2.imread(img_name,1)
 dic={"cr":"assorted.png","tr":"carnation.png","sr":"gerber.png","cg":"hibiscusred.png","tg":"marigold.png","sg":"hydrangeablue.png","cb":"hydrangeayellow.png","tb":"lilac.png","sb":"lily.png"}
 def color_recog(p1,p2,img2,string):
@@ -11,7 +11,7 @@ def color_recog(p1,p2,img2,string):
      upper = np.array(p2)
      mask  = cv2.inRange(hsv, lower, upper)
      ret,thresh = cv2.threshold(mask,125,255,0)
-     cv2.imshow("thresh",thresh)
+     #cv2.imshow("thresh",thresh)
      imgg, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
      t=0
      c=0
@@ -35,6 +35,15 @@ def color_recog(p1,p2,img2,string):
      return t,c,s      
        
 def detect_markers():
+  tb=0
+  cb=0
+  sb=0
+  tg=0
+  cg=0
+  sg=0
+  tr=0
+  cr=0
+  sr=0
   pblue2=[130,255,255]
   pblue1=[75,50,50]
   tb,cb,sb=color_recog(pblue1,pblue2,img,'string1')
@@ -46,6 +55,7 @@ def detect_markers():
   tr,cr,sr=color_recog(pred1,pred2,img,'str2')
   markers={"tr":tr,"tg":tg,"tb":tb,"sr":sr,"sg":sg,"sb":sb,"cr":cr,"cg":cg,"cb":cb}
   print markers
+  return markers
 
 
 def blend_transparent(face_img, overlay_t_img):
@@ -115,13 +125,13 @@ def plane(image,overlay_image,size,kitni_baar,spacing=30):#size of the flower sh
         i = i + 1
         count = count+spacing
         img_x = img_x + 5
-image = cv2.imread("horizontal.jpg", -1)
-overlay_image = cv2.imread("carnation.png",-1)
+image = cv2.imread("Plantation.png", -1)
+#overlay_image = cv2.imread("carnation.png",-1)
 
 # number_of_times = 4
-# size_of_flower = 40
-# flower_spacing = 40
-hillside(image,overlay_image,size_of_flower,number_of_times,flower_spacing)#for hillside size_of_flower = 40 flower_Spacing = 40
+size_of_flower = 40
+flower_spacing = 40
+#hillside(image,overlay_image,size_of_flower,number_of_times,flower_spacing)#for hillside size_of_flower = 40 flower_Spacing = 40
 # berns(image,overlay_image,size_of_flower,number_of_times,flower_spacing)#for berns size_of_flower = 40 flower_Spacing = 40
 # size_of_flower = 30
 # flower_spacing = 30
@@ -129,7 +139,20 @@ hillside(image,overlay_image,size_of_flower,number_of_times,flower_spacing)#for 
 # size_of_flower = 30
 # flower_spacing = 25
 # plane(image,overlay_image,size_of_flower,number_of_times,flower_spacing)#for plane size_of_flower = 30 flower_Spacing = 25
-detect_markers()
+markers=detect_markers()
+for key in markers:
+  overlay_image_path="Seedlings/"+dic[key]
+  #overlay_image_path = "Seedlings/carnation.png"
+  overlay_image = cv2.imread(overlay_image_path,-1)
+  hillside(image,overlay_image,size_of_flower,markers[key],flower_spacing)
+#for hillside size_of_flower = 40 flower_Spacing = 40
+#hillside(image,overlay_image,size_of_flower,number_of_times,flower_spacing)#for hillside size_of_flower = 40 flower_Spacing = 40
+while True:
+  cv2.imshow('frame',image)
+        # cv2.imshow('Frame', final_overlay)
+
+  if cv2.waitKey(25) & 0xFF == ord('q'):
+    break
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
