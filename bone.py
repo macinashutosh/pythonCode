@@ -72,13 +72,30 @@ def motor_stop():
     GPIO.output(Motor2A,0)
     GPIO.output(Motor2B,0)
 
+def turn_extreme_left():
+    GPIO.output(Motor1A,1)
+    GPIO.output(Motor1B,0)
+    #GPIO.output(Motor1E,1)
+    GPIO.output(Motor2A,0)
+    GPIO.output(Motor2B,1)
+    #GPIO.output(Motor2E,1)
+    print "extreme left"
+def turn_extreme_right():
+    GPIO.output(Motor1A,0)
+    GPIO.output(Motor1B,1)
+    #GPIO.output(Motor1E,1)
+    GPIO.output(Motor2A,1)
+    GPIO.output(Motor2B,0)
+    print "extreme_right"
+    #GPIO.output(Motor2E,1)
 
 camera = PiCamera()
 camera.resolution = (160, 600)
 camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(160, 600))
 time.sleep(1)
-current_dec = 0 #1 for Right -1 for Left
+current_dec = 0 #1 for Right -1 for Left 0 for c
+i = 5
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
  image = frame.array
  crop_img = image[0:120, 0:160]
@@ -161,7 +178,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # Find the contours of the frame
  img, contours4, hierarchy = cv2.findContours(mask.copy(), 1, cv2.CHAIN_APPROX_NONE)
     # Find the biggest contour (if detected)
- delay_time = 0.3
+ delay_time = 0.1
  final_contours = contours1
  if len(contours2)>0:
   final_contours = contours2
@@ -174,42 +191,48 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
  if len(contours) > 0:
   c = max(contours, key=cv2.contourArea)
   M = cv2.moments(c)
-
+  #print cv2.contourArea(c)
   cx = int(M['m10']/M['m00'])
   cy = int(M['m01']/M['m00'])
-
+  
   cv2.line(crop_img,(cx,0),(cx,720),(255,0,0),1)
   cv2.line(crop_img,(0,cy),(1280,cy),(255,0,0),1)
 
   cv2.drawContours(crop_img, contours, -1, (0,255,0), 1)
 
-  #print cx
+  print cx
   #print cy
-
-  if cx >= 120: #right
-   offset_x = (cx-60)
-   print offset_x
-   turn_right()
-   current_dec = 1
-   #GPIO.output(40, GPIO.HIGH)
-   #GPIO.output(35, GPIO.LOW)
-  if cx < 120 and cx > 50:
-   go_straight()
-   #GPIO.output(40, GPIO.LOW)
-   #GPIO.output(35, GPIO.LOW)
-  if cx <= 50: #left
-   offset_x = (60-(60-cx))
-   print offset_x
-   turn_left()
-   current_dec = -1
-   #GPIO.output(40, GPIO.LOW) 
-   #GPIO.output(35, GPIO.HIGH)
+  if cv2.contourArea(c) > 600 or i > 0:
+    i = i -1
+    if cx >= 120: #right
+     offset_x = (cx-60)
+     #print offset_x
+     turn_right()
+     current_dec = 1
+     #GPIO.output(40, GPIO.HIGH)
+     #GPIO.output(35, GPIO.LOW)
+    if cx < 120 and cx > 50:
+     go_straight()
+     #GPIO.output(40, GPIO.LOW)
+     #GPIO.output(35, GPIO.LOW)
+    if cx <= 50: #left
+     offset_x = (60-(60-cx))
+     #print offset_x
+     turn_left()
+     current_dec = -1
+     #GPIO.output(40, GPIO.LOW) 
+     #GPIO.output(35, GPIO.HIGH)
+  else:
+    if current_dec == -1:
+     turn_extreme_left()
+    elif current_dec == 1:
+     turn_extreme_right()
   time.sleep(delay_time)
   motor_stop()
  elif len(final_contours) > 0:
   c = max(final_contours, key=cv2.contourArea)
   M = cv2.moments(c)
-
+  #print cv2.contourArea(c)
   cx = int(M['m10']/M['m00'])
   cy = int(M['m01']/M['m00'])
 
@@ -218,32 +241,48 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
   cv2.drawContours(crop_img,final_contours, -1, (0,255,0), 1)
 
-  #print cx
+  print cx
   #print cy
-
-  if cx > 75: #right
-   offset_x = (cx-60)
-   print offset_x
-   turn_right()
-   current_dec = 1
-   #GPIO.output(40, GPIO.HIGH)
-   #GPIO.output(35, GPIO.LOW)
-   #GPIO.output(40, GPIO.LOW)
-   #GPIO.output(35, GPIO.LOW)
-  if cx <= 75: #left
-   offset_x = (60-(60-cx))
-   print offset_x
-   turn_left()
-   current_dec = -1
-   #GPIO.output(40, GPIO.LOW) 
-   #GPIO.output(35, GPIO.HIGH)
+  if cv2.contourArea(c) > 600 or i > 0:
+    i = i -1
+    if cx >= 120: #right
+     offset_x = (cx-60)
+     #print offset_x
+     turn_extreme_right()
+     current_dec = 1
+     #GPIO.output(40, GPIO.HIGH)
+     #GPIO.output(35, GPIO.LOW)
+     #GPIO.output(40, GPIO.LOW)
+     #GPIO.output(35, GPIO.LOW)
+    if cx <= 50: #left
+     offset_x = (60-(60-cx))
+     #print offset_x
+     turn_extreme_left()
+     current_dec = -1
+     #GPIO.output(40, GPIO.LOW) 
+     #GPIO.output(35, GPIO.HIGH)
+    if cx >50 and cx < 120:
+     if current_dec == -1:
+      turn_left()
+     elif current_dec == 1:
+      turn_right()
+     
+    if cx<0:
+     motor_stop()
+     print "jaddoooooo"
+  else:
+    print "iski aukaat se bahar hai"
+    if current_dec == -1:
+     turn_extreme_left()
+    elif current_dec == 1:
+     turn_extreme_right()
   time.sleep(delay_time)
   motor_stop()
  else:
   if current_dec == -1:
-   turn_left()
+   turn_extreme_left()
   elif current_dec == 1:
-   turn_right()
+   turn_extreme_right()
   time.sleep(delay_time)
   motor_stop()
   #GPIO.output(40, GPIO.HIGH)
