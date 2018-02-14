@@ -19,7 +19,6 @@ imae = cv2.imread("Plantation.png", -1)
 
 #GPIO.output(40, GPIO.HIGH)
 #GPIO.output(35, GPIO.HIGH)
-zone_count=0
 hills={}
 berns={}
 cliff={}
@@ -205,7 +204,7 @@ def color_recog(img):
  tr,cr,sr=shape_recog(pred1,pred2,img,'str2')
  markers={"tr":tr,"tg":tg,"tb":tb,"sr":sr,"sg":sg,"sb":sb,"tr":cr,"cg":cg,"cb":cb}
  return markers
-def detect_markers(img):
+def detect_markers(img,zone_count):
  zone_count=zone_count+1
  if zone_count==1:
   hills=color_recog(img)
@@ -213,7 +212,7 @@ def detect_markers(img):
   cliff=color_recog(img)
  elif zone_count ==3:
   berns=color_recog(img)
- else
+ else:
   plains=color_recog(img)    
 def get_contours(crop_img):
  gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
@@ -250,6 +249,7 @@ time.sleep(1)
 current_dec = 0 #1 for Right -1 for Left 0 for c
 i = 5
 count = 1
+zone_count = 0
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
  image = frame.array
  crop_img = image[0:120, 240:400]
@@ -263,7 +263,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     time.sleep(0.8)
     motor_stop()
     time.sleep(1)
-    detect_markers(image)    
+    detect_markers(image,zone_count)    
     break
   count = count - 1
     # Convert to grayscale
