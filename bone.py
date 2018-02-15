@@ -221,8 +221,8 @@ def get_contours(crop_img):
  blur = cv2.GaussianBlur(gray,(5,5),0)
 
     # Color thresholding
- ret,thresh1 = cv2.threshold(blur,60,255,cv2.THRESH_BINARY_INV)
-
+ #ret,thresh1 = cv2.threshold(blur,60,255,cv2.THRESH_BINARY_INV)
+ thresh1 = cv.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,11,2)
     # Erode and dilate to remove accidental line detections
  mask = cv2.erode(thresh1, None, iterations=2)
  mask = cv2.dilate(mask, None, iterations=2)
@@ -261,7 +261,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
  if byeByeCameraError > 0:
    byeByeCameraError = byeByeCameraError -1
  else:
-   if(get_contours(image)>60000):
+   if(get_contours(image)>140000):
     if count < 0:
       print "zone_marker_aagya"
       time.sleep(0.8)
@@ -460,7 +460,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
   
 
     #Display the resulting frame
- cv2.imshow('frame',image)
+ #cv2.imshow('frame',image)
  #cv2.imshow('frame1',crop_img)
  #cv2.imshow('frame2',crop_img1)
  #cv2.imshow('frame3',crop_img2)
