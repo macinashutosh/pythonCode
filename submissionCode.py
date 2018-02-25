@@ -27,7 +27,7 @@ cv2.imshow('image',image)
 cv2.waitKey(0)
 
 #This dictionary contain the realtion between the color marker and the seedling images that needs to be overlaid
-dic={"cr":"assorted.png","tr":"carnation.png","sr":"gerber.png","cg":"hibiscusred.png","tg":"marigold.png","sg":"hydrangeablue.png","cb":"hydrangeayellow.png","tb":"lilac.png","sb":"lily.png"}
+dic={"cr":"carnation.png","tr":"tulipred.png","sr":"gerber.png","cg":"lily-double.png","tg":"hydrangeayellow.png","sg":"sunflower.png","cb":"orchid.png","tb":"tulipblue.png","sb":"hydrangeablue.png"}
 color_list = {"tr":"red","sr":"red","cr":"red","tb":"blue","sb":"blue","cb":"blue","tg":"green","sg":"green","cg":"green"}
 
 Motor1A = 29 #GPIO pin number for M+ of motor encoder for the Right Motor
